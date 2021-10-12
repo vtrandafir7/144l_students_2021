@@ -1,0 +1,42 @@
+---
+title: "test_2018_abundance"
+author: "Justine Albers"
+output: github_document
+---
+# Goal: 
+
+# title
+## title 
+### title 
+
+This document shows how **individual bottle** bacterial abundance data from 2018 remineralization experiments were processed, QC'd and analyzed. It also provides an introduction to data processing and analysis with RStudio and RMarkdown. 
+
+# Intro to R Markdown
+
+We will use R Markdown to make our science reproducible and easily understood by someone who is not familar with R. 
+
+To create a new code chunk, press the green "C" button and click "R" from the dropdown menu in the toolbar above OR for Mac: type Cmd + option + i and for PC: Ctrl + alt + i.
+
+Let's first load the packages that we'll need to analyze our data. 
+
+```{r Load packages, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(readxl)
+library(lubridate)
+```
+
+We can toggle on/off messages and warnings based on what we want to appear in our final R markdown output. 
+
+# Import Data
+
+We also want to set our working directory so that we can easily refer to our data files.
+
+```{r, setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "~/Google Drive/Shared drives/EEMB144/EEMB144L_2021/R & RStudio & GitHub Info/144l_students_2021/")
+```
+
+```{r}
+excel_sheets("~/")
+
+```
+
