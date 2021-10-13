@@ -21,9 +21,58 @@ library(lubridate)
 
 We can toggle on/off warnings in chunks if we don't want them in our final markdown file. 
 
-# Import Data
+# Import Data 
 
 ```{r}
-excel_sheets("")
+excel_sheets("~/Google Drive/Shared drives/EEMB144/EEMB144L_2021/144l_students_2021/Input_Data/week3/144L_2018_BactAbund.xlsx")
+
+#Mac: to make an arrow, use Option + - 
+
+metadata <- read_excel("~/Google Drive/Shared drives/EEMB144/EEMB144L_2021/144l_students_2021/Input_Data/week3/144L_2018_BactAbund.xlsx", sheet = "Metadata")
+
+glimpse(metadata)
+#unique(metadata$Bottle)
+#unique(metadata$Treatment)
+
+data <- read_excel("~//Google Drive/Shared drives/EEMB144/EEMB144L_2021/144l_students_2021/Input_Data/week3/144L_2018_BactAbund.xlsx", sheet = "Data")
+glimpse(data)
+
+joined <-  left_join(metadata, data) #attach data to metadata
+#joins right dataset to the left one by using variables that are the same across the two dataframes
+glimpse(joined)
+
+```
+
+# Prepare Data 
+
+We will convert the Date and Time column values from characters to dates, add columns with time elapsed for each treatment, and convert to cells/L because it will help us match up with the TOC data later. We will then subset the data for variables of interest and drop NA values. 
+
+To do this, we are going to using **piping**. Piping is an operation that allows us to write more efficient code. The way that we'll use it here is to manipulate our data sequentially. The pipe operator "%>%", which basically says like "first do one thing to the data. THEN, do this other thing." (with the %>% operator taking the place of the word THEN in this scenario). Every call that we invoke with an additional pipe is going to take place on the variable (dataframe) that we specify at the beginning. 
+
+```{r}
+cells <- joined %>%
+  mutate(Datetime = ymd_hm(Datetime), #splits apart Datetime as specified
+  cells_L = Cells_ml * 1000) %>%
+  group_by(Treatment, Bottle) %>%
+#group our dataset so that we can calculate the time elapsed properly 
+  mutate(interv = interval(first(Datetime), Datetime), 
+         s = as.numeric(interv), 
+         hours = s/3600, 
+         days = hours/24) %>%
+  ungroup() %>%
+  select(Experiment:DNA_Sample, cells_L, hours, days) %>%
+  drop_na(cells_L)
+glimpse(cells)
+```
+
+# Plot growth curves
+
+We will plot a growth curve for each bottle. 
+
+First, let's set up some aesthetics for our plot. 
+```{r}
+cells %>%
+  ggplot(aes(x=days, y=cells_L, group = interaction(Treatment, Bottle))) +
+  geom_point()
 ```
 
