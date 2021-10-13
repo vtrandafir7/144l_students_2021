@@ -29,14 +29,63 @@ We can toggle on/off messages and warnings based on what we want to appear in ou
 
 # Import Data
 
-We also want to set our working directory so that we can easily refer to our data files.
+```{r}
+excel_sheets("Input_Data/week3/144L_2018_BactAbund.xlsx")
 
-```{r, setup, include=FALSE}
-knitr::opts_knit$set(root.dir = "~/Google Drive/Shared drives/EEMB144/EEMB144L_2021/R & RStudio & GitHub Info/144l_students_2021/")
+metadata <- read_excel("Input_Data/week3/144L_2018_BactAbund.xlsx", sheet = "Metadata")
+
+glimpse(metadata)
+#unique(metadata$Bottle)
+
+data <- read_excel("Input_Data/week3/144L_2018_BactAbund.xlsx", sheet = "Data")
+glimpse(data)
+
+joined <- left_join(metadata, data) 
+#joins the right dataset to the left one by variables that are the same
+glimpse(joined)
+
 ```
 
-```{r}
-excel_sheets("~/")
+## Prepare Data
 
+Here we will convert the DAte and Time column values from characters to dates, add columns with time elapsed for each experiment, and convert to cells/L because it will help us match the abundance data with the TOC data. We will also subset the variables of interest and drop NA values. 
+
+To do this, we will use something called **piping**. Piping is an operation which allows us to write more efficient code. The way we will use it here is to perform a series of manipulations on our dataset sequentially. The pipe operator "%>%" sort of says "first, do this. **THEN** do this." (with the %>% operator taking the place of the word THEN). Every call that we invoke with an additional pipe will take place on the variable specified at the beginning. 
+
+```{r}
+cells <- joined %>% 
+  mutate(Datetime = ymd_hm(Datetime), #splits apart the Datetime as specified
+  cells = Cells_ml * 1000) %>% #creates a new column called cells
+  group_by(Treatment, Bottle) %>%
+  #we need to group our dataset so we can calculate time elapsed properly within each treatment and bottle. 
+  mutate(interv = interval(first(Datetime), Datetime), 
+         s = as.numeric(interv), 
+         hours = s/3600, 
+         days = hours/24) %>%
+  ungroup() %>%
+  select(Experiment:DNA_Sample, cells, hours, days) %>%
+  drop_na(cells)
+glimpse(cells)
+  
+```
+
+# Plot growth curves
+
+We will plot a growth curve for each bottle. 
+
+First let's set up some aesthetics for our plot. 
+```{r plot aesthetics}
+custom.colors <- c("Control" = "#377EB8", "Ash Leachate" = "#4DAF4A", "Mud Leachate" = "#E41A1C", "Glucose_Nitrate_Phosphate" = "#FF7F00")
+levels <- c("Control", "Ash Leachate", "Mud Leachate", "Glucose_Nitrate_Phosphate") #gives ggplot an order to show things in the plot legend. 
+#c() combines the elements listed in parentheses into a vector, a sort of list which you can see on the right. 
+```
+
+Now, we will generate the plot using a handy package called ggplot. 
+
+```{r}
+cells %>% 
+  #mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  ggplot(aes(x=days, y=cells, group = interaction(Treatment, Bottle))) + 
+  geom_point()
 ```
 
