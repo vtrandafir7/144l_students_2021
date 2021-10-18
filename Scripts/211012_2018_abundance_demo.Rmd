@@ -99,10 +99,10 @@ glimpse(cells)
 
 We can calculate: 
 
--total change in cells from initial condition to the end of the experiment. 
--specific growth rate as the slope of ln(abundance) v time during exponential growth phase
--doubling time as ln(2) divided by the specific growth rate
--mean of each of these parameters across each treatment
+- total change in cells from initial condition to the end of the experiment. 
+- specific growth rate as the slope of ln(abundance) v time during exponential growth phase
+- doubling time as ln(2) divided by the specific growth rate
+- mean of each of these parameters across each treatment
 
 1st, we need to determine **where** exponential growth is ocurring in each of our bottles, if it does. To do this, we 'll plot ln(abundance) vs time. 
 
