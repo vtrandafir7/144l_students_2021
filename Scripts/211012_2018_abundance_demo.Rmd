@@ -64,12 +64,12 @@ cells <- joined %>%
   drop_na(cells_L)
 glimpse(cells)
 ```
+# Plot Growth Curves
 
-# Plot growth curves
+We will plot growth curve for each bottle. Need cell abundance and days data. 
 
-We will plot a growth curve for each bottle. Need cell abundance data and days. 
+First, let's set some aesthetics for our plot. 
 
-First, let's set up some aesthetics for our plot. 
 ```{r}
 #assign hex colors to our different treatments
 custom.colors <- c("Control" = "#377EB8", "Ash Leachate" = "#4DAF4A", "Mud Leachate" = "#E41A1C", "Glucose_Nitrate_Phosphate" = "#FF7F00")
@@ -77,101 +77,83 @@ custom.colors <- c("Control" = "#377EB8", "Ash Leachate" = "#4DAF4A", "Mud Leach
 #assign levels to control what order things appear in the legend
 levels <- c("Control", "Ash Leachate", "Mud Leachate", "Glucose_Nitrate_Phosphate")
 
-#using c() creates an object that is basically a vector, or list of the things within, it's a way to store values that you might want to call back later in your code. 
+#now let's use a handy package, ggplot to visualize our data. 
 
-#now let's use a handy function called ggplot to visualize our data
-#1. just to ggplot with only x & y defined + geom_point()
-#2. add aes fill, size, etc. to geom_point, still don't know which bottle though & treatments are out of order
-#3. add factor to Treatment w levels
-#4. add geom_line above geom_point with Treatment as factor, explain how ggplot layers things
-#5. add, group = to aes, explain that this is similar to the group_by function, data is grouped by the interaction of Treatment and Bottle
-#6. next is error bars but we won't do this since our data have no sd 
-#7. handle labels next after geom_point, add fill= "" to remove the title of legend
-#8. add guides = none to get rid of the line legend
-#9. facet grid to organize by experiment, don't need this but just demonstrate
-#10. add theme
-#11. add our custom colors 
-#12. add new column to cells for when DNA samples is true
-#13. add geom_text under geom_point to get the labels for dna samples
 cells %>%
   mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
   ggplot(aes(x=days, y=cells_L, group = interaction(Treatment, Bottle))) +
-  geom_line(aes(color = factor(Treatment, levels = levels)), size = 1) +
+  geom_line(aes(color = factor(Treatment, levels = levels)), size =1) +
   geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black", shape = 21) + 
-  geom_text(aes(label = dna), size = 12, color = "#E41A1C")+
-  labs(x = "Days", y = expression(paste("Cells, L"^-1)), fill = "") +
+  geom_text(aes(label = dna), size = 12, color = "#E41A1C") +
+  labs(x = "Days", y = expression(paste("Cells, L"^-1)), fill = "") + 
   guides(color = "none") + 
   scale_color_manual(values = custom.colors) +
   scale_fill_manual(values = custom.colors) +
-  #facet_grid(rows = "Treatment", scales = "free")
+  #facet_grid(rows = "Treatment")
   theme_bw()
+glimpse(cells)
 ```
 
-Share brief interpretation of plot (growth relative to control)
 
 # Next Steps 
 
 We can calculate: 
 
--total change in cells from inital condition to the end of the experiment
--specific growth rates as the slope of ln(abundance) v time during exponential growth phase
--doubling time as ln(2) divided by the specific growth rate 
+-total change in cells from initial condition to the end of the experiment. 
+-specific growth rate as the slope of ln(abundance) v time during exponential growth phase
+-doubling time as ln(2) divided by the specific growth rate
 -mean of each of these parameters across each treatment
 
-1st, we'll have to determine **where** exponential growth is occurring in each of the bottles, if it does. To do this, we'll plot ln(abundance) vs time. 
+1st, we need to determine **where** exponential growth is ocurring in each of our bottles, if it does. To do this, we 'll plot ln(abundance) vs time. 
 
-# Identify exponential phase of growth 
+# Identify exponential phase of growth in our remin experiments
 
 **NOTE about logarithms in R** 
 
-log(x) gives the natural log of x, not log base 10 
+log(x) gives the natural log of x, not log base 10
 log10(x) gives the log base 10
-log2(x)  gives log base 2 
+log2(x) gives log base 2
 
 ```{r}
 ln_cells <- cells %>%
   group_by(Treatment, Bottle) %>%
-  mutate(ln_cells = log(cells_L),
-         diff_ln_cells = ln_cells - lag(ln_cells, default = first(ln_cells))) 
-#ln_cells is a column name here, not the df
-#subtracting the previous row from the one below it 
-#can add/remove the default line and re-make the df to show what it does 
+  mutate(ln_cells = log(cells_L), 
+         diff_ln_cells = ln_cells - lag(ln_cells, default = first(ln_cells)))
 ```
 
-Now let's plot our new calculated data: 
+Now, let's plot our newly calculated data! 
 
-```{r fig.height=6, fig.width=8, message=FALSE, warning=FALSE}
+```{r fig.height=6, fig.width=8}
 ln_cells %>%
   mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
   ggplot(aes(x=days, y=diff_ln_cells, group = interaction(Treatment, Bottle))) +
-  geom_line(aes(color = factor(Treatment, levels = levels)), size = 1) +
-  geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black",shape = 21) + 
-  geom_text(aes(label = dna), size = 12, color = "#E41A1C")+
-  labs(x = "Days", y = expression(paste("∆ln cells, L"^-1)), fill = "") + #delta is Option + j 
+  geom_line(aes(color = factor(Treatment, levels = levels)), size =1) +
+  geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black", shape = 21) + 
+  geom_text(aes(label = dna), size = 12, color = "#E41A1C") +
+  labs(x = "Days", y = expression(paste("∆ln cells, L"^-1)), fill = "") + 
   guides(color = "none") + 
   scale_color_manual(values = custom.colors) +
   scale_fill_manual(values = custom.colors) +
-  #we will want to see each plot by itself, so add a facet
-  facet_wrap("Bottle", ncol = 2) +
+  facet_wrap("Bottle", ncol =2) +
   theme_bw()
 ```
-Exponential growth seems to be occurring right at the beginning of the experiment between 0-1 days for pretty much all the treatments. 
+Exponential growth seems to be occurring right at the beginning of the experiment between 0-1 days for the most of the bottles. 
 
-Let's try just plotting ln_cells to see if that helps us id exponential growth. 
+Let's try plotting ln_cells to see if that can help us identify exponential growth in the control a little better. 
 
-```{r}
+```{r fig.height=6, fig.width=8}
 ln_cells %>%
   mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
   ggplot(aes(x=days, y=ln_cells, group = interaction(Treatment, Bottle))) +
-  geom_line(aes(color = factor(Treatment, levels = levels)), size = 1) +
-  geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black",shape = 21) + 
-  geom_text(aes(label = dna), size = 12, color = "#E41A1C")+
-  labs(x = "Days", y = expression(paste("ln cells, L"^-1)), fill = "") + #delta is Option + j 
+  geom_line(aes(color = factor(Treatment, levels = levels)), size =1) +
+  geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black", shape = 21) + 
+  geom_text(aes(label = dna), size = 12, color = "#E41A1C") +
+  labs(x = "Days", y = expression(paste("ln cells, L"^-1)), fill = "") + 
   guides(color = "none") + 
   scale_color_manual(values = custom.colors) +
   scale_fill_manual(values = custom.colors) +
-  #we will want to see each plot by itself, so add a facet
-  facet_wrap("Bottle", ncol = 2) +
+  facet_wrap("Bottle", ncol =2) +
   theme_bw()
 ```
+
 
