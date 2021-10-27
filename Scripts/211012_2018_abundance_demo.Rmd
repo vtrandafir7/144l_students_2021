@@ -70,7 +70,7 @@ We will plot growth curve for each bottle. Need cell abundance and days data.
 
 First, let's set some aesthetics for our plot. 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 #assign hex colors to our different treatments
 custom.colors <- c("Control" = "#377EB8", "Ash Leachate" = "#4DAF4A", "Mud Leachate" = "#E41A1C", "Glucose_Nitrate_Phosphate" = "#FF7F00")
 
@@ -123,7 +123,7 @@ ln_cells <- cells %>%
 
 Now, let's plot our newly calculated data! 
 
-```{r fig.height=6, fig.width=8}
+```{r fig.height=6, fig.width=8, message=FALSE, warning=FALSE}
 ln_cells %>%
   mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
   ggplot(aes(x=days, y=diff_ln_cells, group = interaction(Treatment, Bottle))) +
@@ -141,7 +141,7 @@ Exponential growth seems to be occurring right at the beginning of the experimen
 
 Let's try plotting ln_cells to see if that can help us identify exponential growth in the control a little better. 
 
-```{r fig.height=6, fig.width=8}
+```{r fig.height=6, fig.width=8, message=FALSE, warning=FALSE}
 ln_cells %>%
   mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
   ggplot(aes(x=days, y=ln_cells, group = interaction(Treatment, Bottle))) +
