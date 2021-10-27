@@ -1,0 +1,37 @@
+---
+title: "Dapi Abundance 2021"
+author: "Victor Trandafir"
+date: "10/27/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Goal
+
+This document shows how individual bottle bacterial abundance data from 2021 remineralization experiments were processed, QC’d and analyzed.
+
+```{r}
+
+#Load necessary packages.
+
+library(tidyverse)
+library(readxl)
+library(lubridate)
+
+```
+
+### Import Data
+
+```{r}
+
+excel_sheets("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx")
+
+metadata <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx", sheet = "Metadata")
+
+dapi_data <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx", sheet = "DAPI_Data")
+
+```
+
