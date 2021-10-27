@@ -46,7 +46,7 @@ library(lubridate)
 excel_sheets("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx")
 ```
 
-    ## [1] "Metadata" "Data"
+    ## [1] "Metadata"  "FCM_Data"  "DAPI_Data"
 
 ``` r
 metadata <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx", sheet = "Metadata")
@@ -74,7 +74,7 @@ glimpse(metadata)
     ## $ Nutrient_Sample      <lgl> TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, F…
 
 ``` r
-data <-  read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx", sheet = "Data")
+data <-  read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx", sheet = "FCM_Data")
 
 glimpse(data)
 ```
