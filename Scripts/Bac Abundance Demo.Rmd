@@ -1,0 +1,157 @@
+---
+title: "Bacterial Abundance 2021"
+author: "Victor Trandafir"
+date: "10/13/2021"
+output: github_document
+---
+
+# Goal
+
+This document shows how **individual bottle** bacterial abundance data from 2018 remineralization experiments were processed, QC'd, and analyzed. It also provides an intro to RStudio and R Markdown.
+
+## Intro to R Markdown
+
+### Load packages needed to analyze our data.
+
+```{r}
+
+library(tidyverse)
+library(readxl)
+library(lubridate)
+
+```
+
+### Import Data
+
+```{r}
+
+excel_sheets("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx")
+
+metadata <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx", sheet = "Metadata")
+
+glimpse(metadata)
+
+data <-  read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx", sheet = "Data")
+
+glimpse(data)
+
+joined <- left_join(metadata, data)
+
+glimpse(joined)
+
+```
+
+### Prepare Data
+
+Convert the 'Datetime' column values from characters to dates, add columns with time elapsed for each treatment, and convert data to cells/L to have it match with TOC data. Then, we will subset the data for variables of interest and drop 'NA' values. We will use piping to achieve this in order to write more efficient code and sequentially manipulate data. The pipe operator '%>%' will be used.
+
+```{r}
+
+joined$all_cells_uL <- as.numeric(joined$all_cells_uL) #Convert all_cells_uL from chr to num.
+
+cells <- joined %>%
+  mutate(Datetime = ymd_hm(Datetime),
+  cells_L = all_cells_uL * 1000000) %>%
+  group_by(Treatment, Bottle) %>%
+  mutate(interv = interval(first(Datetime), Datetime),
+         s = as.numeric(interv),
+         hours = s/3600,
+         days = hours/24) %>%
+  ungroup() %>%
+  select(Experiment:DNA_Sample, cells_L, hours, days) %>%
+  drop_na(cells_L)
+
+glimpse(cells)
+
+```
+
+###Plot Growth Curves
+
+Plot growth curves for each bottle using cell abundance and days data.
+
+```{r}
+
+custom.colors <- c("Control" = "#D3A588", "Kelp Exudate" = "#7DCFB6", "Kelp Exudate_Nitrate_Phosphate" = "#BB0A21", "Glucose_Nitrate_Phosphate" = "#1D4E89")
+
+levels <- c("Control", "Kelp Exudate", "Kelp Exudate_Nitrate_Phosphate", "Glucose_Nitrate_Phosphate")
+
+cells %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  ggplot(aes(x = days, y = cells_L, interaction(Treatment, Bottles))) +
+  geom_line(aes(color = factor(Treatment, levels = levels)), size = 1) +
+  geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black", shape = 21) +
+  geom_text(aes(label = dna), size = 12, color = "#FF9B42") +
+  labs(x = "Days", y = expression(paste("Cells L"^-1)), fill = "") +
+  guides(color = "none") +
+  scale_color_manual(values = custom.colors) +
+  scale_fill_manual(values = custom.colors)
+
+```
+
+### Calculations
+
+The following values will be calculated:
+  • Total change in cells from initial condition to the end of the experiment.
+  • Specific growth rate as the slope of ln(abundance) vs time during     exponential growth phase.
+  • Doubling time as ln(2) divided by the specific growth rate.
+  • Mean of each of these parameters across each treatment.
+
+#### Identify Exponential Phase of Growth in Our Remineralization Experiment
+
+```{r}
+
+ln_cells <- cells %>%
+  group_by(Treatment, Bottle) %>%
+  mutate(ln_cells = log(cells_L),
+         diff_ln_cells = ln_cells - lag(ln_cells, default = first(ln_cells)))
+
+```
+
+#### Plot Log Transformed Data
+
+```{r fig.height=4, fig.width=6}
+
+ln_cells %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  ggplot(aes(x = days, y = diff_ln_cells, interaction(Treatment, Bottles))) +
+  geom_line(aes(color = factor(Treatment, levels = levels)), size = 1) +
+  geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black", shape = 21) +
+  geom_text(aes(label = dna), size = 12, color = "#FF9B42") +
+  labs(x = "Days", y = expression(paste("∆ln cells L"^-1)), fill = "") +
+  guides(color = "none") +
+  scale_color_manual(values = custom.colors) +
+  scale_fill_manual(values = custom.colors) +
+  facet_wrap("Bottle", ncol = 2)
+
+```
+
+For treatments A and B, exponential growth seems to be occurring between T0-T1 and T6-T7. For C, exponential growth is seen at T6-T7. For D, exponential growth is occurring at T0-T1 and T3-T4. For E, exponential growth occurs between the third and fifth time points. For F, exponential growth occurs between the first and second time points. For G, exponential growth occurs between the third and fourth time points. For H, exponential growth occurs between the first and second time points.
+
+```{r fig.height=4, fig.width=6}
+
+ln_cells %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  ggplot(aes(x = days, y = ln_cells, interaction(Treatment, Bottles))) +
+  geom_line(aes(color = factor(Treatment, levels = levels)), size = 1) +
+  geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black", shape = 21) +
+  geom_text(aes(label = dna), size = 12, color = "#FF9B42") +
+  labs(x = "Days", y = expression(paste("Cells L"^-1)), fill = "") +
+  guides(color = "none") +
+  scale_color_manual(values = custom.colors) +
+  scale_fill_manual(values = custom.colors) +
+  facet_wrap("Bottle", ncol = 2)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
