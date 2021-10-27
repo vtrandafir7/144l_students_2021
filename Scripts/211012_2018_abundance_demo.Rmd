@@ -24,17 +24,17 @@ We can toggle on/off warnings in chunks if we don't want them in our final markd
 # Import Data 
 
 ```{r}
-excel_sheets("~/Documents/144l_students_2021/Input_Data/week3/144L_2018_BactAbund.xlsx")
+excel_sheets("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week3/144L_2018_BactAbund.xlsx")
 
 #Mac: to make an arrow, use Option + - 
 
-metadata <- read_excel("~/Documents/144l_students_2021/Input_Data/week3/144L_2018_BactAbund.xlsx", sheet = "Metadata")
+metadata <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week3/144L_2018_BactAbund.xlsx", sheet = "Metadata")
 
 glimpse(metadata)
 #unique(metadata$Bottle)
 #unique(metadata$Treatment)
 
-data <- read_excel("~/Documents/144l_students_2021/Input_Data/week3/144L_2018_BactAbund.xlsx", sheet = "Data")
+data <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week3/144L_2018_BactAbund.xlsx", sheet = "Data")
 glimpse(data)
 
 joined <-  left_join(metadata, data) #attach data to metadata
