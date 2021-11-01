@@ -40,17 +40,19 @@ vignettes/*.pdf
 
 #Justine's files to ignore
 .DS_Store
+Input_Data/.DS_Store
 Input_Data/week3/144L_2021_BactAbund.xlsx
 Input_Data/week3/211017_new_Data.csv
 Input_Data/week4/144L_2021_BactAbund_2.xlsx
-211015_2021_abundance_data.md
-211015_2021_abundance_data_files/
-211015_2021_abundance_data.Rmd
-211017_demo_planning.Rmd
-211018_2021_abundance_data.Rmd
-211018_2021_abundance_data_files
-211024_2021_abundance_data.Rmd
-211024_2021_fcm1_data.Rmd
-211027_2021_dapi_abundance.md
-211027_2021_dapi_data_demo_files
-211027_2021_dapi_data_demo.Rmd
+Scripts/211015_2021_abundance_data.md
+Scripts/211015_2021_abundance_data_files/
+Scripts/211015_2021_abundance_data.Rmd
+Scripts/211017_demo_planning.Rmd
+Scripts/211018_2021_abundance_data.Rmd
+Scripts/211018_2021_abundance_data_files
+Scripts/211024_2021_abundance_data.Rmd
+Scripts/211024_2021_fcm1_data.Rmd
+Scripts/211027_2021_dapi_abundance.md
+Scripts/211027_2021_dapi_data_demo_files
+Scripts/211027_2021_dapi_data_demo.Rmd
+Scripts/211027_2021_dapi_data_demo.md
