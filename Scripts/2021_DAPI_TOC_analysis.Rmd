@@ -186,7 +186,7 @@ A: Between 0-2 days for all bottles. (T0 - T4)
 
 Q3: What are the limitations of using the DAPI data (only 3 timepoints) instead of the FCM data? Hint: Think about this question in terms of bacterial growth curves, and which phase of growth we need in order to calculate specific growth rates. 
 
-A3:
+A3: The disadvantage of using the DAPI data is that we are not able to account for the lag phase of growth since there are only three time points so we ignore that phase of growth when estimating the timeframe for exponential growth based on the plot.
 
 ## Calculate growth rates, doubling times, and ∆cell abundances using cell abundance data (cells/L)
 
@@ -286,7 +286,7 @@ saveRDS(trt_ba_biovol, "~/Documents/College/Fourth Year/EEMB 144L/Github/144l_st
 
 Q4: How do the bacterial carbon values change when we account for changes in cell biovolume as the experiment progresses? 
 
-A4: 
+A4: The bacterial carbon values for the control and GNP groups remained approximately the same when accounting for changes in biovolume. However, the value for the kelp exudate group decreased, and the value for the kelp exudate + nutrients group increased.
 
 ## Barplots
 
@@ -349,7 +349,7 @@ delta_cells + mew + doubling + plot_annotation(tag_levels = "a") +plot_layout(nc
 
 Q5: Do the patterns you see in the ∆Cells, specific growth rate (u), and doubling time line up with our previous observations of cell abundance? How about with the oxygen drawdown data?
 
-A5: 
+A5: Yes, the observations for ∆cells, specific growth rate, and doubling time are all consistent with the cell abundance data and oxygen drawdown data trends described in the answer for question 1.
 
 # Save Data 
 
@@ -383,10 +383,10 @@ Q6: a) What was our target concentration of carbon to add to each treatment?
     c) What does this imply about our ability to assess the effect of the **type** of DOC added?
     d) What happens to TOC over time in the incubations and does this align with our other data?
 
-A6: a) 
-    b)
-    c) 
-    d) 
+A6: a) 10 umol C L-1.
+    b) No, the target was only hit for the GNP treatment. Insufficient carbon was added to all other treatments.
+    c) We are unable to asses how different types of DOC will affect the concentration of TOC.
+    d) TOC decreases over time which aligns with our other data because carbon is being used to build biomass and is respired as CO2 which is not accounted for in TOC.
 
 ## Calculate DOC, ∆DOC, Bioavailable DOC Fraction, and Bacterial Growth Efficiency (BGE)
 ```{r}
@@ -488,4 +488,4 @@ deldoc / deldoc_bv / bioav / bioav_bv / bge / bge_bv + plot_annotation(tag_level
 ```
 Q7: How does incorporating biovolume change (or not change) your interpretation of the ∆DOC, Bioavaliable DOC, and BGE values? Provide 1-2 sentences for each comparison (a vs. b,c vs. d & e vs. f)
 
-A7: 
+A7: Biovolume does not seem to have a significant change for ∆DOC and bioavailable DOC. There is a significant increase in BGE when accounting for biovolume indicating that not accounting for biovolume can lead to significant underestimates of BGE.

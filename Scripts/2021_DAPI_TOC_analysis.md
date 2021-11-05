@@ -234,7 +234,32 @@ glimpse(cells)
 Q1: What differences between the treatments do you observe? Does this
 make sense in the context of the oxygen drawdown data (pictured below)?
 
-A1:
+A1: All treatments started at approximately equal cell abundance. As the
+experiment progressed, the control group exhibited linear growth. The
+kelp exudate treatment initially showed more rapid growth than the
+control, but this rate was reduced starting at day 2 and both the kelp
+exudate and control groups had approximately equal cell abundance at the
+conclusion of the experiment.
+
+The kelp exudate + nutrient treatment increased in abundance more
+rapidly than both the control and kelp exudate treatments. This growth
+slowed starting at day 2 and was slightly slower than the control
+between days 2-4. Growth rate in the kelp exudate + nutrient treatment
+was consistently higher than the kelp exudate treatment throughout the
+entirety of the experiment. At the consclusion of the experiment, the
+kelp exudate + nutrient treatment had a significantly higher cell
+abundance than both the kelp exudate and control groups.
+
+The glucose, nitrate, and phosphate (GNP) group showed the highest
+growth rate between days 0-2. However, the cell abundance of the GNP
+group began to decrease after day 2. At the conclusion of the
+experiment, the GNP group had a higher cell abundance than all three
+groups, but this abundance was only significantly higher than the
+control and kelp exudate groups.
+
+These trends are all consistent with the change in oxygen concentration
+given the inverse relationship that is expected between cell abundance
+and oxygen concentration.
 
 Oxygen Drawdown: ![](EEMB144_remin_autoBOD.png)
 
@@ -296,7 +321,15 @@ glimpse(cells)
 Q2: What differences do you notice between the cell abundance data and
 the cell biovolume data across each treatment?
 
-A2:
+A2: In all treatment groups, cell abundance had a positive change
+between the conception and conclusion of the experiment. However,
+biovolume only had a net increase for the kelp exudate + nutrient
+treatment. For all other treatment groups, biovolume increased until day
+2 and then decreased to approximately the same amount as day 0.
+Furthermore, cell abundance had consistent increases throughout the
+entirety of the experiment for all groups except the GNP group where it
+initially increased but started decreasing after day 2. Biovolume for
+all groups initially increased but then started decreasing after day 2.
 
 # Next Steps
 
@@ -359,7 +392,10 @@ instead of the FCM data? Hint: Think about this question in terms of
 bacterial growth curves, and which phase of growth we need in order to
 calculate specific growth rates.
 
-A3:
+A3: The disadvantage of using the DAPI data is that we are not able to
+account for the lag phase of growth since there are only three time
+points so we ignore that phase of growth when estimating the timeframe
+for exponential growth based on the plot.
 
 ## Calculate growth rates, doubling times, and ∆cell abundances using cell abundance data (cells/L)
 
@@ -567,7 +603,10 @@ saveRDS(trt_ba_biovol, "~/Documents/College/Fourth Year/EEMB 144L/Github/144l_st
 Q4: How do the bacterial carbon values change when we account for
 changes in cell biovolume as the experiment progresses?
 
-A4:
+A4: The bacterial carbon values for the control and GNP groups remained
+approximately the same when accounting for changes in biovolume.
+However, the value for the kelp exudate group decreased, and the value
+for the kelp exudate + nutrients group increased.
 
 ## Barplots
 
@@ -641,7 +680,9 @@ Q5: Do the patterns you see in the ∆Cells, specific growth rate (u), and
 doubling time line up with our previous observations of cell abundance?
 How about with the oxygen drawdown data?
 
-A5:
+A5: Yes, the observations for ∆cells, specific growth rate, and doubling
+time are all consistent with the cell abundance data and oxygen drawdown
+data trends described in the answer for question 1.
 
 # Save Data
 
@@ -735,7 +776,12 @@ imply about our ability to assess the effect of the **type** of DOC
 added? d) What happens to TOC over time in the incubations and does this
 align with our other data?
 
-A6: a) b) c) d)
+A6: a) 10 umol C L-1. b) No, the target was only hit for the GNP
+treatment. Insufficient carbon was added to all other treatments. c) We
+are unable to asses how different types of DOC will affect the
+concentration of TOC. d) TOC decreases over time which aligns with our
+other data because carbon is being used to build biomass and is respired
+as CO2 which is not accounted for in TOC.
 
 ## Calculate DOC, ∆DOC, Bioavailable DOC Fraction, and Bacterial Growth Efficiency (BGE)
 
@@ -857,4 +903,7 @@ Q7: How does incorporating biovolume change (or not change) your
 interpretation of the ∆DOC, Bioavaliable DOC, and BGE values? Provide
 1-2 sentences for each comparison (a vs. b,c vs. d & e vs. f)
 
-A7:
+A7: Biovolume does not seem to have a significant change for ∆DOC and
+bioavailable DOC. There is a significant increase in BGE when accounting
+for biovolume indicating that not accounting for biovolume can lead to
+significant underestimates of BGE.
