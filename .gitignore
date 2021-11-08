@@ -7,6 +7,8 @@
 
 # User-specific files
 .Ruserdata
+Input_Data/week7/Reference_Database
+Input_Data/week7/ACIDD_Remin_fastq
 
 # Example code in package build process
 *-Ex.R
