@@ -28,6 +28,9 @@ library(ShortRead)
 
 You will need to download your sequences from the [shared google drive](https://drive.google.com/drive/folders/1kmLhML2Sanv0gE8RnxpcyNEcrhan-Q2h?usp=sharing) to a folder in your repository. Because this folder will then contain a lot of data (over the limit for pushing to the GitHub server), you'll want to have your commits ignore the addition and any changes to that folder. THIS IS IMPORTANT. You can modify the .gitignore file in your repository by:
 
+-clicking on the .gitignore file to open it in R Studio if you can see it in the "Files" tab of RStudio (the bottom right pane where you can navigate around inside your 144L repository)
+
+OR by:  
 - revealing hidden files (command + shift + . on a mac and in [windows](https://support.microsoft.com/en-us/help/4028316/windows-view-hidden-files-and-folders-in-windows-10), open *file explorer*, select *view > options > change folder* and  *search options*, select *view* and in *advanced setting*, select *show hidden files, folders, and drives* )
 - open the .gitignore file (textedit on a mac and notepad in widows)
 - add the name of the folder containing the fastq (sequence) files to the .gitignore file, save, and close
