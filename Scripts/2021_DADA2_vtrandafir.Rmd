@@ -11,10 +11,10 @@ This script processes trimmed (w/o primers) sequences through the [DADA2 (1.18) 
 
 uncomment (remove the #'s preceding each line of code) the following code to install the required packages. This may take a few minutes.
 ```{r}
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install("dada2", version = '3.14')
-BiocManager::install("ShortRead")
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+#BiocManager::install("dada2", version = '3.14')
+#BiocManager::install("ShortRead")
 ```
 
 # Load packages
@@ -38,7 +38,8 @@ OR by:
 ```{r}
 #save the path to the directory with a COPY of your unzipped fastq files that you WILL work with. MAKE SURE YOU HAVE ANOTHER DIRECTORY WITH THE FILES THAT YOU WILL NEVER DIRECTLY WORK WITH. 
 
-path <- "~/Documents/144l_students_2021/Input_Data/week7/ACIDD_Remin_fastq" #make sure there is no / at the end of the path
+path <- "~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week7/ACIDD_Remin_fastq" 
+#make sure there is no / at the end of the path
 #also make sure there are no unzipped files in this directory
 
 #store the names of fwd and rv files as lists
@@ -90,7 +91,7 @@ rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs[[1]]),
 
 Q1: Why do we see primers in the reverse complement of FWD.ReverseReads and REV.ForwardReads? What will we use to remove them later?
 
-A1: 
+A1: We see these primers because the reads are long enough to detect the primers on the end. We will use the 'MergePairs' function to remove them later.
 
 # Insepct read quality profiles 
 
