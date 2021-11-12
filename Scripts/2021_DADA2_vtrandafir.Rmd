@@ -104,7 +104,7 @@ plotQualityProfile(fnFs[1:12])
 ```
 Q2: Where will we trim our forward reads, and why?
 
-A2: We will trim our forward reads at position 240 to avoid the errors that arise at the end of the run despite their not being a significant drop in the quality read.
+A2: We will trim our forward reads at position 240 to avoid the errors that arise at the end of the run despite there not being a significant drop in the quality read.
 
 # Reverse reads 
 
