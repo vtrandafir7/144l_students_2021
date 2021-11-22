@@ -254,4 +254,3 @@ saveRDS(t(seqtab.nochim), "~/Documents/College/Fourth Year/EEMB 144L/Github/144l
 saveRDS(taxa, "~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week9/taxa.rds")
         
 ```
-
