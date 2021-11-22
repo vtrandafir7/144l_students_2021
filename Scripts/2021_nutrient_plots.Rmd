@@ -1,0 +1,85 @@
+---
+title: "Nutrient Plots"
+author: "Victor Trandafir"
+date: "11/18/2021"
+output: "github_document"
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(RColorBrewer)
+
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+
+nutrients <- read.csv("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week8/2021_nutrient_condensed.csv")
+
+levels <- c("A", "B", "C", "D", "E", "F", "G", "H")
+
+nutrients %>%
+  ggplot(aes(x = Time, y = Phosphate_uM, group = Sample)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~factor(Sample, levels = levels), nrow = 1) +
+  ggtitle(expression(paste("Change in Phosphate Concentration by Treatment Group"))) +
+  xlab("Timepoint")+
+  ylab(expression(paste("Phosphate (", mu, "M)")))
+
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+
+nutrients %>%
+  ggplot(aes(x = Time, y = Nitrite_Nitrate_uM, group = Sample)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~factor(Sample, levels = levels), nrow = 1) +
+  ggtitle(expression(paste("Change in Nitrite/Nitrate Concentration by Treatment Group"))) +
+  xlab("Timepoint")+
+  ylab(expression(paste("Nitrate/Nitrate (", mu, "M)")))
+
+```
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+
+nutrients %>%
+  ggplot(aes(x = Time, y = Ammonia_uM, group = Sample)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap(~factor(Sample, levels = levels), nrow = 1) +
+  ggtitle(expression(paste("Change in Ammonia Concentration by Treatment Group"))) +
+  xlab("Timepoint")+
+  ylab(expression(paste("Ammonia (", mu, "M)")))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
