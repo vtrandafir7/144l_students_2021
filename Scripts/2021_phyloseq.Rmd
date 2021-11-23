@@ -1,8 +1,8 @@
 ---
-title: "211122_144L_phyloseq"
-author: "Your Name"
-date: "11/17/2021"
-output: html_document
+title: "2021 Phyloseq"
+author: "Victor Trandafir"
+date: "11/22/2021"
+output: github_document
 ---
 # Intro
 
@@ -31,19 +31,21 @@ library(RColorBrewer)
 # Import Data 
 
 ```{r message = F}
-count.tab <- read_rds("~/Documents/144l_students_2021/Input_Data/week9/144Lseqtab-nochimtaxa.rds") #table of counts for each sequence in each sample, update the file path for the .rds file you generated with dada2
-tax.tab <- read_rds("~/Documents/144l_students_2021/Input_Data/week9/144L_taxa.rds") #table that matches ASV to sequence, update file path to your own file
+count.tab <- read_rds("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week9/seqtab-nochimtaxa.rds") #table of counts for each sequence in each sample, update the file path for the .rds file you generated with dada2
+tax.tab <- read_rds("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week9/taxa.rds") #table that matches ASV to sequence, update file path to your own file
 
 #you will need to download the Kelp_Exp_Processed_DOC_BGE.rds and the 144L_2021_metadata.xlsx files from the week9 folder on the class Google Drive and put them into your own local Input Data folder
-metadata_OG <- read_excel("~/Documents/144l_students_2021/Input_Data/week9/144L_2021_metadata.xlsx", sheet = "Metadata")
+metadata_OG <- read_excel("~//Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week9/144L_2021_metadata.xlsx", sheet = "Metadata")
 glimpse(metadata_OG)
 metadata <- metadata_OG %>%
   select(-Datetime)
 glimpse(metadata)
 #you can get this file from your own week6 data
-metadata_doc <- read_rds("~/Documents/144l_students_2021/Output_Data/week6/144L_Exp_Processed_BactAbund.rds")
+metadata_doc <- read_rds("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Output_Data/week6/144L_Exp_Processed_BactAbund.rds")
+metadata_doc = subset(metadata_doc, select = -c(ln_cells_exp_start, ln_cells_exp_end, mew, doubling))
 glimpse(metadata_doc)
-metadata_mock <- read_csv("~/Documents/144l_students_2021/Input_Data/week9/144L_2018_metadata.csv")
+metadata_mock <- read_csv("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week9/144L_2018_metadata.csv")
+metadata_mock = subset(metadata_mock, select = -c(ln_cells_exp_start, ln_cells_exp_end, cells_exp_phase_start, cells_exp_phase_end, days_exp_phase_start, days_exp_phase_end, mew, doubling, delta_cells_exp, bac_carbon_uM, delta_bac_carbon_uM))
 glimpse(metadata_mock)
 join1 <- rbind(metadata_mock, metadata_doc)
 glimpse(join1)
@@ -410,10 +412,10 @@ Everything shown here is just a snapshot of what you can look at with your commu
 # Save and knit
 
 ```{r}
-saveRDS(sweet.tab, "~/Documents/144l_students_2021/Output_Data/week9/Custom_ASV_Table.rds")
-saveRDS(sub_ps, "~/Documents/144l_students_2021/Output_Data/week9/phyloseq_obj.rds")
-saveRDS(ps_min, "~/Documents/144l_students_2021/Output_Data/week9/subsampled_phyloseq_obj.rds")
-saveRDS(alphadiv, "~/Documents/144l_students_2021/Output_Data/week9/alphadiv.rds")
+saveRDS(sweet.tab, "~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Output_Data/week9/Custom_ASV_Table.rds")
+saveRDS(sub_ps, "~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Output_Data/week9/phyloseq_obj.rds")
+saveRDS(ps_min, "~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Output_Data/week9/subsampled_phyloseq_obj.rds")
+saveRDS(alphadiv, "~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Output_Data/week9/alphadiv.rds")
 
 ```
 
@@ -447,7 +449,7 @@ relabar.data %>%
 
 #Another way to make the barplot: 
 
-```{r}
+```{r message=FALSE, results=FALSE}
 #transform data to fractional abundance (relative abundance)
 i.frac <- transform_sample_counts(sub_ps, function(otu) otu/sum(otu))
 head(sample_data(i.frac))
@@ -478,7 +480,7 @@ gen.top <- Reduce(rbind, top)
 ```
 
 ```{r}
-HowManydivision <- length(unique(gen.top[[61]]))
+HowManydivision <- length(unique(gen.top[[49]]))
 getPalette = colorRampPalette(brewer.pal(8, "Set2")) 
 PhylaPalette = getPalette(HowManydivision)
 #PhylaPalette = getPalette(2)
