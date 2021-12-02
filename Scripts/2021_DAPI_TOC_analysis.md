@@ -16,7 +16,7 @@ Load packages that we’ll need to analyze our data.
 ``` r
 #make sure to update the filepaths for your own locally-stored repository! 
 
-excel_sheets("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx")
+excel_sheets("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx")
 ```
 
     ## [1] "Metadata"  "FCM_Data"  "DAPI_Data" "TOC_Data"
@@ -24,7 +24,7 @@ excel_sheets("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_202
 ``` r
 #Mac: to make an arrow, use Option + - 
 
-metadata <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx", sheet = "Metadata")
+metadata <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx", sheet = "Metadata")
 
 glimpse(metadata)
 ```
@@ -52,7 +52,7 @@ glimpse(metadata)
 #unique(metadata$Bottle)
 #unique(metadata$Treatment)
 
-dapi_data <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx", sheet = "DAPI_Data")
+dapi_data <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx", sheet = "DAPI_Data")
 glimpse(dapi_data)
 ```
 
@@ -66,7 +66,7 @@ glimpse(dapi_data)
     ## $ Biovolume_Stdev_um3_cell <dbl> 0.006054805, 0.011000369, 0.004684495, 0.0054…
 
 ``` r
-toc_data <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week4/144L_2021_BactAbund.xlsx", sheet = "TOC_Data")
+toc_data <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx", sheet = "TOC_Data")
 glimpse(toc_data)
 ```
 
@@ -335,11 +335,11 @@ all groups initially increased but then started decreasing after day 2.
 
 We can calculate:
 
-  - total change in cells from inital condition to the end of the
+-   total change in cells from inital condition to the end of the
     experiment
-  - specific growth rates as the slope of ln(abundance) v time during
+-   specific growth rates as the slope of ln(abundance) v time during
     exponential growth phase
-  - doubling time as ln(2) divided by the specific growth rate
+-   doubling time as ln(2) divided by the specific growth rate
 
 1st, we’ll have to determine **where** exponential growth is occurring
 in each of the bottles, if it does. To do this, we’ll plot ln(abundance)
@@ -471,10 +471,10 @@ Apply a carbon conversion factor (CCF) to bacterial abundances (cells
 L<sup>-1</sup>) to generate bacterial carbon (µmol C L<sup>-1</sup>)
 
 We’ll apply the average carbon content of bacterioplankton cells from
-Coastal Japan (\~30 fg C cell<sup>-1</sup>), reported by [Fukuda et
-al., 1998](https://aem.asm.org/content/64/9/3352). This CCF was used in
-previous experiments conducted in the SBC: [James et
-al., 2017](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0173145)
+Coastal Japan (\~30 fg C cell<sup>-1</sup>), reported by [Fukuda et al.,
+1998](https://aem.asm.org/content/64/9/3352). This CCF was used in
+previous experiments conducted in the SBC: [James et al.,
+2017](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0173145)
 
 We will also generate our own CCFs using the biovolume data and the
 equation provided by Prof. Carlson in class:
@@ -619,12 +619,16 @@ bar.data <- bactcarbon %>%
 ``` r
 mew <- bar.data %>% 
   ggplot(aes(x = factor(Treatment, levels = levels), y = mew), group = Treatment) +
-  geom_col(color = "black", fill = "white") +
-  #geom_errorbar(aes(ymin = ave_mew - sd_mew, ymax = ave_mew + sd_mew), width = 0.1) +
-  labs(x = "", y = expression("µ, d"^-1)) +
+  geom_bar(position = position_dodge(), stat = "identity", aes(fill = factor(Treatment, levels = levels)), alpha = 1) +
+  geom_errorbar(aes(ymin = ifelse(mew - sd(mew) < 0, 0, mew - sd(mew)), ymax = mew + sd(mew)), width = 0.1) +
+  labs(x = "", y = expression(paste("Specific Growth Rate (", d^-1, ")"))) +
   guides(scale = "none")+
   coord_flip()+
-  theme_bw()
+  theme_classic() +
+  scale_x_discrete(labels = c("Control", "Kelp Exudate", "Kelp Exudate,
+Nitrate, & Phosphate", "Glucose, Nitrate,
+& Phosphate")) +
+  theme(legend.position = "none")
 
 mew 
 ```
@@ -638,11 +642,15 @@ mew
 ``` r
 doubling <- bar.data %>% 
   ggplot(aes(x = factor(Treatment, levels = levels), y = doubling), group = Treatment) +
-  geom_col(color = "black", fill = "white") +
-  #geom_errorbar(aes(ymin = ave_doubling - sd_doubling, ymax = ave_doubling + sd_doubling), width = 0.1) +
-  labs(x = "", y = expression("Doubling Time, d")) +
-  coord_flip()+
-  theme_bw()
+  geom_bar(position = position_dodge(), stat = "identity", aes(fill = factor(Treatment, levels = levels)), alpha = 1) +
+  geom_errorbar(aes(ymin = ifelse(doubling - sd(doubling) < 0, 0, doubling - sd(doubling)), ymax = doubling + sd(doubling)), width = 0.1) +
+  labs(x = "", y = expression("Doubling Time (d)")) +
+  coord_flip() +
+  theme_classic() +
+  scale_x_discrete(labels = c("Control", "Kelp Exudate", "Kelp Exudate,
+Nitrate, & Phosphate", "Glucose, Nitrate,
+& Phosphate")) +
+  theme(legend.position = "none")
 
 doubling
 ```
@@ -652,11 +660,15 @@ doubling
 ``` r
 delta_cells <- bar.data %>% 
   ggplot(aes(x = factor(Treatment, levels = levels), y = delta_cells), group = Treatment) +
-  geom_col(color = "black", fill = "white") +
-  #geom_errorbar(aes(ymin = ave_delta_bc - sd_delta_bc, ymax = ave_delta_bc + sd_delta_bc), width = 0.1) +
-  labs(x = "", y = expression("∆ Cells, L"^-1)) +
+  geom_bar(position = position_dodge(), stat = "identity", aes(fill = factor(Treatment, levels = levels)), alpha = 1) +
+  geom_errorbar(aes(ymin = ifelse(delta_cells - sd(delta_cells) < 0, 0, delta_cells - sd(delta_cells)), ymax = delta_cells + sd(delta_cells)), width = 0.1) +
+  labs(x = "", y = expression(paste("∆Cells (", L^-1, ")"))) +
   coord_flip() +
-  theme_bw()
+  theme_classic() +
+  scale_x_discrete(labels = c("Control", "Kelp Exudate", "Kelp Exudate,
+Nitrate, & Phosphate", "Glucose, Nitrate,
+& Phosphate")) +
+  theme(legend.position = "none")
 delta_cells
 ```
 
@@ -804,14 +816,18 @@ doc <- toc %>%
 
 ``` r
 bioav <- doc %>% 
-ggplot(aes(x = factor(Treatment, levels = levels), y =  bioav_doc, group =Treatment))  + 
-  geom_bar(position = position_dodge(), stat = "identity", color = "black", fill = "white", alpha = 1) +
-  #geom_errorbar(aes(ymin = ave_bioav_doc - sd_bioav_doc, ymax = ave_bioav_doc + sd_bioav_doc), position = position_dodge(width = 0.9), stat = "identity", width = 0.1, size = 0.5) +
+  ggplot(aes(x = factor(Treatment, levels = levels), y =  bioav_doc, group =Treatment))  + 
+  geom_bar(position = position_dodge(), stat = "identity", aes(fill = factor(Treatment, levels = levels)), alpha = 1) +
+  geom_errorbar(aes(ymin = ifelse(bioav_doc - sd(bioav_doc) < 0, 0, bioav_doc - sd(bioav_doc)), ymax = bioav_doc + sd(bioav_doc)), position = position_dodge(width = 0.9), stat = "identity",
+  width = 0.1, size = 0.5) +
   labs(x = "", y = expression(paste("Bioavailable DOC Fraction")), color = "") +
   theme_classic() +
   coord_flip()+
-  #facet_grid(~factor(Location, levels = levels), scales = "free") +
-  guides(scale = "none") 
+  guides(scale = "none") +
+  scale_x_discrete(labels = c("Control", "Kelp Exudate", "Kelp Exudate,
+Nitrate, & Phosphate", "Glucose, Nitrate,
+& Phosphate")) +
+  theme(legend.position = "none")
 
 bioav
 ```
@@ -821,13 +837,17 @@ bioav
 ``` r
 bioav_bv <- doc %>% 
 ggplot(aes(x = factor(Treatment, levels = levels), y =  bioav_doc_bv, group =Treatment))  + 
-  geom_bar(position = position_dodge(), stat = "identity", color = "black", fill = "white", alpha = 1) +
-  #geom_errorbar(aes(ymin = ave_bioav_doc - sd_bioav_doc, ymax = ave_bioav_doc + sd_bioav_doc), position = position_dodge(width = 0.9), stat = "identity", width = 0.1, size = 0.5) +
+  geom_bar(aes(fill = factor(Treatment, levels = levels)), position = position_dodge(), stat = "identity", alpha = 1) +
+  geom_errorbar(aes(ymin = ifelse(bioav_doc_bv - sd(bioav_doc_bv) < 0, 0, bioav_doc_bv - sd(bioav_doc_bv)), ymax = bioav_doc_bv + sd(bioav_doc_bv)), position = position_dodge(width = 0.9), stat = "identity",
+  width = 0.1, size = 0.5) +
   labs(x = "", y = expression(paste("Biovolume-Derived Bioavailable DOC Fraction")), color = "") +
   theme_classic() +
   coord_flip()+
-  #facet_grid(~factor(Location, levels = levels), scales = "free") +
-  guides(scale = "none") 
+  guides(scale = "none") +
+  scale_x_discrete(labels = c("Control", "Kelp Exudate", "Kelp Exudate,
+Nitrate, & Phosphate", "Glucose, Nitrate,
+& Phosphate")) +
+  theme(legend.position = "none")
 
 bioav_bv
 ```
@@ -837,13 +857,17 @@ bioav_bv
 ``` r
 deldoc <- doc %>% 
 ggplot(aes(x = factor(Treatment, levels = levels), y =  delta_doc, group =Treatment))  + 
-  geom_bar(position = position_dodge(), stat = "identity", color = "black", fill = "white", alpha = 1) +
-  #geom_errorbar(aes(ymin = ave_delta_doc - sd_delta_doc, ymax = ave_delta_doc + sd_delta_doc), position = position_dodge(width = 0.9), stat = "identity", width = 0.1, size = 0.5) +
-  labs(x = "", y = expression(paste("∆ DOC, µmol C L"^-1)), color = "") +
+  geom_bar(aes(fill = factor(Treatment, levels = levels)), position = position_dodge(), stat = "identity", alpha = 1) +
+  geom_errorbar(aes(ymin = ifelse(delta_doc - sd(delta_doc) < 0, 0, delta_doc - sd(delta_doc)), ymax = delta_doc + sd(delta_doc)), position = position_dodge(width = 0.9), stat = "identity", width = 0.1, size = 0.5) +
+  labs(x = "", y = expression(paste("∆DOC (µmol C ",L^-1,")")), color = "") +
   theme_classic() +
   coord_flip()+
-  #facet_grid(~factor(Location, levels = levels), scales = "free") +
-  guides(scale = "none") 
+  guides(scale = "none") +
+  scale_x_discrete(labels = c("Control", "Kelp Exudate", "Kelp Exudate,
+Nitrate, & Phosphate", "Glucose, Nitrate,
+& Phosphate")) +
+  theme(legend.position = "none")
+
 deldoc
 ```
 
@@ -852,13 +876,17 @@ deldoc
 ``` r
 deldoc_bv <- doc %>% 
 ggplot(aes(x = factor(Treatment, levels = levels), y =  delta_doc_bv, group =Treatment))  + 
-  geom_bar(position = position_dodge(), stat = "identity", color = "black", fill = "white", alpha = 1) +
-  #geom_errorbar(aes(ymin = ave_delta_doc - sd_delta_doc, ymax = ave_delta_doc + sd_delta_doc), position = position_dodge(width = 0.9), stat = "identity", width = 0.1, size = 0.5) +
-  labs(x = "", y = expression(paste("Biovolume-Derived ∆ DOC, µmol C L"^-1)), color = "") +
+  geom_bar(aes(fill = factor(Treatment, levels = levels)), position = position_dodge(), stat = "identity", alpha = 1) +
+  geom_errorbar(aes(ymin = ifelse(delta_doc_bv - sd(delta_doc_bv) < 0, 0, delta_doc_bv - sd(delta_doc_bv)), ymax = delta_doc_bv + sd(delta_doc_bv)), position = position_dodge(width = 0.9), stat = "identity", width = 0.1, size = 0.5) +
+  labs(x = "", y = expression(paste("Biovolume-Derived ∆DOC, (µmol C ", L^-1, ")")), color = "") +
   theme_classic() +
   coord_flip()+
-  #facet_grid(~factor(Location, levels = levels), scales = "free") +
-  guides(scale = "none") 
+  guides(scale = "none") +
+  scale_x_discrete(labels = c("Control", "Kelp Exudate", "Kelp Exudate,
+Nitrate, & Phosphate", "Glucose, Nitrate,
+& Phosphate")) +
+  theme(legend.position = "none")
+
 deldoc_bv
 ```
 
@@ -867,13 +895,17 @@ deldoc_bv
 ``` r
 bge <- doc %>% 
 ggplot(aes(x = factor(Treatment, levels = levels), y =  bge, group =Treatment))  + 
-  geom_bar(position = position_dodge(), stat = "identity", color = "black", fill = "white", alpha = 1) +
-  #geom_errorbar(aes(ymin = ave_bge - sd_bge, ymax = ave_bge + sd_bge), position = position_dodge(width = 0.9), stat = "identity", width = 0.1, size = 0.5) +
+  geom_bar(aes(fill = factor(Treatment, levels = levels)), position = position_dodge(), stat = "identity", alpha = 1) +
+  geom_errorbar(aes(ymin = ifelse(bge - sd(bge) < 0, 0, bge - sd(bge)), ymax = bge + sd(bge)), position = position_dodge(width = 0.9), stat = "identity", width = 0.1, size = 0.5) +
   labs(x = "", y = expression(paste("Bacterial Growth Efficiency")), color = "") +
   theme_classic() +
   coord_flip()+
-  #facet_grid(~factor(Location, levels = levels), scales = "free") +
-   guides(scale = "none") 
+   guides(scale = "none") +
+  scale_x_discrete(labels = c("Control", "Kelp Exudate", "Kelp Exudate,
+Nitrate, & Phosphate", "Glucose, Nitrate,
+& Phosphate")) +
+  theme(legend.position = "none")
+
 bge
 ```
 
@@ -882,13 +914,17 @@ bge
 ``` r
 bge_bv <- doc %>% 
 ggplot(aes(x = factor(Treatment, levels = levels), y =  bge_bv, group =Treatment))  + 
-  geom_bar(position = position_dodge(), stat = "identity", color = "black", fill = "white", alpha = 1) +
-  #geom_errorbar(aes(ymin = ave_bge - sd_bge, ymax = ave_bge + sd_bge), position = position_dodge(width = 0.9), stat = "identity", width = 0.1, size = 0.5) +
+  geom_bar(aes(fill = factor(Treatment, levels = levels)), position = position_dodge(), stat = "identity", alpha = 1) +
+  geom_errorbar(aes(ymin = ifelse(bge_bv - sd(bge_bv) < 0, 0, bge_bv - sd(bge_bv)), ymax = bge_bv + sd(bge_bv)), position = position_dodge(width = 0.9), stat = "identity", width = 0.1, size = 0.5) +
   labs(x = "", y = expression(paste("Biovolume-Derived Bacterial Growth Efficiency")), color = "") +
   theme_classic() +
   coord_flip()+
-  #facet_grid(~factor(Location, levels = levels), scales = "free") +
-  guides(scale = "none") 
+  guides(scale = "none") +
+  scale_x_discrete(labels = c("Control", "Kelp Exudate", "Kelp Exudate,
+Nitrate, & Phosphate", "Glucose, Nitrate,
+& Phosphate")) +
+  theme(legend.position = "none")
+
 bge_bv
 ```
 
@@ -898,10 +934,10 @@ bge_bv
 deldoc / deldoc_bv / bioav / bioav_bv / bge / bge_bv + plot_annotation(tag_levels = "a") + plot_layout(ncol = 2)
 ```
 
-![](2021_DAPI_TOC_analysis_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
-Q7: How does incorporating biovolume change (or not change) your
-interpretation of the ∆DOC, Bioavaliable DOC, and BGE values? Provide
-1-2 sentences for each comparison (a vs. b,c vs. d & e vs. f)
+![](2021_DAPI_TOC_analysis_files/figure-gfm/fig-1.png)<!-- --> Q7: How
+does incorporating biovolume change (or not change) your interpretation
+of the ∆DOC, Bioavaliable DOC, and BGE values? Provide 1-2 sentences for
+each comparison (a vs. b,c vs. d & e vs. f)
 
 A7: Biovolume does not seem to have a significant change for ∆DOC and
 bioavailable DOC. There is a significant increase in BGE when accounting
