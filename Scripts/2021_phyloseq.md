@@ -620,7 +620,7 @@ ps_min <-  rarefy_even_depth(sub_ps, sample.size = min(sample_sums(sub_ps)))
 
     ## ...
 
-    ## 318OTUs were removed because they are no longer 
+    ## 317OTUs were removed because they are no longer 
     ## present in any sample after random subsampling
 
     ## ...
@@ -724,46 +724,62 @@ nmds_min <- ordinate(ps_min, method = "NMDS",  distance = "bray") # stress = 0.0
 
     ## Square root transformation
     ## Wisconsin double standardization
-    ## Run 0 stress 0.1136096 
-    ## Run 1 stress 0.1261284 
-    ## Run 2 stress 0.10091 
+    ## Run 0 stress 0.07393132 
+    ## Run 1 stress 0.07393132 
     ## ... New best solution
-    ## ... Procrustes: rmse 0.1509595  max resid 0.4518629 
-    ## Run 3 stress 0.1136093 
-    ## Run 4 stress 0.08923725 
+    ## ... Procrustes: rmse 5.520266e-06  max resid 1.208619e-05 
+    ## ... Similar to previous best
+    ## Run 2 stress 0.09564988 
+    ## Run 3 stress 0.07393132 
+    ## ... Procrustes: rmse 2.904864e-06  max resid 6.189617e-06 
+    ## ... Similar to previous best
+    ## Run 4 stress 0.07393132 
+    ## ... Procrustes: rmse 6.475962e-06  max resid 1.394217e-05 
+    ## ... Similar to previous best
+    ## Run 5 stress 0.07393132 
+    ## ... Procrustes: rmse 1.749332e-06  max resid 4.658794e-06 
+    ## ... Similar to previous best
+    ## Run 6 stress 0.07393132 
+    ## ... Procrustes: rmse 2.122062e-06  max resid 5.570684e-06 
+    ## ... Similar to previous best
+    ## Run 7 stress 0.07393132 
+    ## ... Procrustes: rmse 4.472535e-06  max resid 1.06865e-05 
+    ## ... Similar to previous best
+    ## Run 8 stress 0.09590011 
+    ## Run 9 stress 0.3504346 
+    ## Run 10 stress 0.07393132 
     ## ... New best solution
-    ## ... Procrustes: rmse 0.1220045  max resid 0.3687839 
-    ## Run 5 stress 0.08923724 
+    ## ... Procrustes: rmse 5.32841e-06  max resid 1.169994e-05 
+    ## ... Similar to previous best
+    ## Run 11 stress 0.07393132 
+    ## ... Procrustes: rmse 5.259566e-06  max resid 1.209681e-05 
+    ## ... Similar to previous best
+    ## Run 12 stress 0.07393132 
+    ## ... Procrustes: rmse 1.375113e-05  max resid 3.148131e-05 
+    ## ... Similar to previous best
+    ## Run 13 stress 0.07393132 
+    ## ... Procrustes: rmse 1.122373e-05  max resid 2.628132e-05 
+    ## ... Similar to previous best
+    ## Run 14 stress 0.07393132 
+    ## ... Procrustes: rmse 2.545885e-05  max resid 5.826423e-05 
+    ## ... Similar to previous best
+    ## Run 15 stress 0.09564932 
+    ## Run 16 stress 0.07393132 
     ## ... New best solution
-    ## ... Procrustes: rmse 4.378312e-05  max resid 0.0001057711 
+    ## ... Procrustes: rmse 3.588737e-06  max resid 8.728146e-06 
     ## ... Similar to previous best
-    ## Run 6 stress 0.08923724 
-    ## ... New best solution
-    ## ... Procrustes: rmse 7.335396e-06  max resid 1.889561e-05 
+    ## Run 17 stress 0.07393132 
+    ## ... Procrustes: rmse 9.965449e-06  max resid 2.329225e-05 
     ## ... Similar to previous best
-    ## Run 7 stress 0.08923724 
-    ## ... New best solution
-    ## ... Procrustes: rmse 4.332529e-06  max resid 9.776252e-06 
+    ## Run 18 stress 0.07393132 
+    ## ... Procrustes: rmse 8.873233e-06  max resid 1.806245e-05 
     ## ... Similar to previous best
-    ## Run 8 stress 0.1009101 
-    ## Run 9 stress 0.1004482 
-    ## Run 10 stress 0.10091 
-    ## Run 11 stress 0.1009101 
-    ## Run 12 stress 0.08923724 
-    ## ... Procrustes: rmse 1.180375e-05  max resid 2.707126e-05 
+    ## Run 19 stress 0.07393132 
+    ## ... Procrustes: rmse 1.66685e-06  max resid 3.275297e-06 
     ## ... Similar to previous best
-    ## Run 13 stress 0.100401 
-    ## Run 14 stress 0.08923724 
-    ## ... Procrustes: rmse 6.611401e-06  max resid 1.69546e-05 
+    ## Run 20 stress 0.07393132 
+    ## ... Procrustes: rmse 9.543589e-06  max resid 2.01998e-05 
     ## ... Similar to previous best
-    ## Run 15 stress 0.100401 
-    ## Run 16 stress 0.08923725 
-    ## ... Procrustes: rmse 4.064698e-05  max resid 0.0001022512 
-    ## ... Similar to previous best
-    ## Run 17 stress 0.1136094 
-    ## Run 18 stress 0.246022 
-    ## Run 19 stress 0.1136094 
-    ## Run 20 stress 0.100401 
     ## *** Solution reached
 
     ##              Experiment    Location Temperature Depth Timepoint
@@ -971,8 +987,7 @@ richness](https://www.jstor.org/stable/4615964?seq=1#metadata_info_tab_contents)
 ``` r
 richness <- estimate_richness(ps_min, measures = c("Chao1", "Shannon")) %>% 
   rownames_to_column(., var = "DNA_ID") %>% 
-  mutate_at(vars(DNA_ID), str_replace_all, pattern = "171.", "171-") %>% 
-   mutate_at(vars(DNA_ID), str_replace_all, pattern = "172.", "172-")
+  mutate_at(vars(DNA_ID), str_replace_all, pattern = "X144_", "144_")
 ```
 
 Let’s add the sample metadata into this dataframe
@@ -1210,18 +1225,18 @@ tax.df <-  as.data.frame(tax.tab)
 #then combine the data frames
 custom.tab <- tax.df %>% 
   rownames_to_column(., var = "asv") %>% 
-  left_join(., ps_std.df %>% rownames_to_column(., var = "asv")) %>% 
+  left_join(., ps_std.df %>% rownames_to_column(., var = "asv")) %>%
   #create a new index of that combines the  class, order, family, and genus values, you can play around here!!
   mutate(#pcofg = paste(Phylum, "_", Class, "_", Order,"_", Family, "_", Genus),
-         # pcof = paste(Phylum, "_", Class, "_", Order,"_", Family,),
+        #pcof = paste(Phylum, "_", Class, "_", Order,"_", Family),
          pco = paste(Phylum, "_", Class, "_", Order)) %>% 
   select(-c(asv:Genus)) %>% 
-  # select(pcof,everything()) %>% 
-  # group_by(pcof) %>% 
+  #select(pcof,everything()) %>% 
+  #group_by(pcof) %>% 
   select(pco,everything()) %>% 
   group_by(pco) %>% 
   #here we are combining the relative abundances based on our grouping
-  #summarise_at(vars(contains(c("ASH171", "ASH172"))), sum, na.rm = T) %>% 
+  summarise_at(vars(contains(c("144"))), sum, na.rm = T) %>%
   ungroup()
 ```
 
