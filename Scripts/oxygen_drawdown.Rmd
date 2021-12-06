@@ -1,0 +1,39 @@
+---
+title: "2021 Oxygen Drawdown"
+author: "Victor Trandafir"
+date: "12/5/2021"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+library(tidyverse)
+library(readxl)
+library(lubridate)
+
+```
+
+```{r echo=FALSE}
+
+delta_oxygen <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week10/delta_oxygen.xlsx")
+
+levels <- c("Control", "Kelp Exudate", "Kelp Exudate, Nitrate, & Phosphate", "Glucose, Nitrate, & Phosphate")
+
+oxygen_drawdown <- delta_oxygen %>%
+  ggplot(aes(x = days, y = change_O2_uM), group = Treatment) +
+  geom_point(aes(color = factor(Treatment, levels = levels)), size = 2.5) +
+  geom_line(aes(color = factor(Treatment, levels = levels))) +
+  geom_errorbar(aes(ymin = change_O2_uM - sd_change_O2_uM, ymax = change_O2_uM + sd_change_O2_uM, width = 0.1)) +
+  theme_classic() +
+  labs(x = "Days", y = expression(paste("Change in Oxygen (", mu, "M)")), fill = "Legend") +
+  scale_x_discrete(limits = c("1", "2", "3", "4", "5", "6", "7")) +
+  scale_color_discrete("") +
+  theme(legend.position = c(0.22, 0.25))
+
+oxygen_drawdown
+
+```
