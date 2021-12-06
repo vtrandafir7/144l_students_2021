@@ -240,8 +240,7 @@ We will use the subsampled library, which retains estimates of the species abund
 ```{r}
 richness <- estimate_richness(ps_min, measures = c("Chao1", "Shannon")) %>% 
   rownames_to_column(., var = "DNA_ID") %>% 
-  mutate_at(vars(DNA_ID), str_replace_all, pattern = "171.", "171-") %>% 
-   mutate_at(vars(DNA_ID), str_replace_all, pattern = "172.", "172-")
+  mutate_at(vars(DNA_ID), str_replace_all, pattern = "X144_", "144_")
 ```
 
 
@@ -335,18 +334,18 @@ tax.df <-  as.data.frame(tax.tab)
 #then combine the data frames
 custom.tab <- tax.df %>% 
   rownames_to_column(., var = "asv") %>% 
-  left_join(., ps_std.df %>% rownames_to_column(., var = "asv")) %>% 
+  left_join(., ps_std.df %>% rownames_to_column(., var = "asv")) %>%
   #create a new index of that combines the  class, order, family, and genus values, you can play around here!!
   mutate(#pcofg = paste(Phylum, "_", Class, "_", Order,"_", Family, "_", Genus),
-         # pcof = paste(Phylum, "_", Class, "_", Order,"_", Family,),
+        #pcof = paste(Phylum, "_", Class, "_", Order,"_", Family),
          pco = paste(Phylum, "_", Class, "_", Order)) %>% 
   select(-c(asv:Genus)) %>% 
-  # select(pcof,everything()) %>% 
-  # group_by(pcof) %>% 
+  #select(pcof,everything()) %>% 
+  #group_by(pcof) %>% 
   select(pco,everything()) %>% 
   group_by(pco) %>% 
   #here we are combining the relative abundances based on our grouping
-  #summarise_at(vars(contains(c("ASH171", "ASH172"))), sum, na.rm = T) %>% 
+  summarise_at(vars(contains(c("144"))), sum, na.rm = T) %>%
   ungroup()
 
 #save the row names and then make them into the column names
