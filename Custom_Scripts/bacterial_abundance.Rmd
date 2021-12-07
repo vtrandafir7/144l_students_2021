@@ -1,0 +1,167 @@
+---
+title: "Bacterial Abundance Plots"
+author: "Victor Trandafir"
+date: "12/07/2021"
+output: github_document
+---
+
+# Goal
+
+This document shows  **individual bottle** bacterial abundance data analysis and plots.
+
+```{r}
+
+#Load packages.
+
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(RColorBrewer)
+
+```
+
+### Import Data
+
+```{r}
+
+excel_sheets("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx")
+
+metadata <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx", sheet = "Metadata")
+
+data <-  read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx", sheet = "FCM_Data")
+
+joined <- left_join(metadata, data)
+
+```
+
+### Prepare Data
+
+```{r}
+
+#Transform data.
+
+joined$all_cells_uL <- as.numeric(joined$all_cells_uL)
+
+cells <- joined %>%
+  mutate(Datetime = ymd_hm(Datetime),
+  cells_L = all_cells_uL * 1000000) %>%
+  group_by(Treatment, Bottle) %>%
+  mutate(interv = interval(first(Datetime), Datetime),
+         s = as.numeric(interv),
+         hours = s/3600,
+         days = hours/24) %>%
+  ungroup() %>%
+  select(Experiment:DNA_Sample, cells_L, hours, days) %>%
+  drop_na(cells_L)
+
+```
+
+```{r}
+
+#Set levels, custom labels, and custom colors.
+
+treatment <- c("Control", "Kelp Exudate", "Kelp Exudate_Nitrate_Phosphate", "Glucose_Nitrate_Phosphate")
+
+treatment_names <- as_labeller(c(
+  "Control" = "Control",
+  "Kelp Exudate" = "Kelp Exudate",
+  "Kelp Exudate_Nitrate_Phosphate" = "Kelp Exudate, Nitrate, & Phosphate",
+  "Glucose_Nitrate_Phosphate" = "Glucose, Nitrate, & Phosphate"
+))
+
+myColors <- brewer.pal(4, "Set2")
+
+names(myColors) <- levels(treatment)
+
+custom_colors <- scale_color_manual(name = "", values = myColors, labels = c("Control", "Kelp Exudate", "Kelp Exudate, Nitrate, & Phosphate", "Glucose, Nitrate, & Phosphate"))
+
+custom_legend <- scale_fill_discrete(labels = c("Control", "Kelp Exudate", "Kelp Exudate, Nitrate, & Phosphate", "Glucose, Nitrate, & Phosphate"))
+
+custom_fill <- scale_fill_manual(name = "", values = myColors, labels = c("Control", "Kelp Exudate", "Kelp Exudate, Nitrate, & Phosphate", "Glucose, Nitrate, & Phosphate"))
+
+```
+
+
+### Growth Curves
+
+```{r}
+
+#Plot growth curves.
+
+cells %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  ggplot(aes(x = days, y = cells_L, fill = Treatment, color = Treatment)) +
+  geom_line(size = 1) +
+  geom_point(size = 3, shape = 21, color = "black") +
+  labs(x = "Days", y = expression(paste("cells L"^-1)), fill = "") +
+  guides(color = "none") +
+  theme_classic() +
+  custom_legend +
+  custom_fill +
+  custom_colors +
+  theme(legend.position = c(0.75, 0.8))
+
+```
+
+#### Identify Exponential Phase of Growth in Our Remineralization Experiment
+
+```{r}
+
+#Calculate ln(cells).
+
+ln_cells <- cells %>%
+  group_by(Treatment, Bottle) %>%
+  mutate(ln_cells = log(cells_L),
+         diff_ln_cells = ln_cells - lag(ln_cells, default = first(ln_cells)))
+
+```
+
+#### Plot Log Transformed Data
+
+```{r fig.height=4, fig.width=6}
+
+#Plot ln transformed data.
+
+ln_cells %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  ggplot(aes(x = days, y = diff_ln_cells, color = Treatment, fill = Treatment)) +
+  geom_line(size = 1) +
+  geom_point(size = 3, color = "black", shape = 21) +
+  labs(x = "Days", y = expression(paste("∆ln cells L"^-1)), fill = "") +
+  guides(color = "none") +
+  facet_wrap("Bottle", ncol = 2)
+  theme_bw() +
+  custom_colors
+
+```
+
+For treatments A and B, exponential growth seems to be occurring between T0-T1 and T6-T7. For C, exponential growth is seen at T6-T7. For D, exponential growth is occurring at T0-T1 and T3-T4. For E, exponential growth occurs between the third and fifth time points. For F, exponential growth occurs between the first and second time points. For G, exponential growth occurs between the third and fourth time points. For H, exponential growth occurs between the first and second time points.
+
+```{r fig.height=4, fig.width=6}
+
+ln_cells %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  ggplot(aes(x = days, y = ln_cells, interaction(Treatment, Bottles))) +
+  geom_line(aes(color = factor(Treatment, levels = levels)), size = 1) +
+  geom_point(aes(fill = factor(Treatment, levels = levels)), size = 3, color = "black", shape = 21) +
+  geom_text(aes(label = dna), size = 12, color = "#FF9B42") +
+  labs(x = "Days", y = expression(paste("Cells L"^-1)), fill = "") +
+  guides(color = "none") +
+  scale_color_manual(values = custom.colors) +
+  scale_fill_manual(values = custom.colors) +
+  facet_wrap("Bottle", ncol = 2)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
