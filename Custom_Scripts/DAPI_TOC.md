@@ -143,7 +143,7 @@ cells %>%
   theme(legend.position = c(0.2, 0.82))
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ## Cell Biovolume
 
@@ -164,7 +164,7 @@ cells %>%
   theme(legend.position = c(0.2, 0.82))
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 # Identify exponential phase of growth.
 
@@ -193,7 +193,7 @@ ln_cells %>%
   theme(legend.position = c(0.2, 0.9))
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ## Calculate growth rates, doubling times, and ∆cell abundances using cell abundance data (cells/L).
 
@@ -275,7 +275,7 @@ trt_ba <- bactcarbon %>%
 trt_ba
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 saveRDS(trt_ba, "~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Output_Data/week6/144L_trt_ba_plot.rds")
@@ -298,7 +298,7 @@ trt_ba_biovol <- bactcarbon %>%
 trt_ba_biovol
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 saveRDS(trt_ba_biovol, "~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Output_Data/week6/144L_trt_ba_biovol_plot.rds")
@@ -333,7 +333,7 @@ Nitrate, & Phosphate", "Glucose, Nitrate,
 mew 
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ``` r
 #Plot doubling time.
@@ -355,7 +355,7 @@ Nitrate, & Phosphate", "Glucose, Nitrate,
 doubling
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 ``` r
 #Plot change in cell abundance.
@@ -377,7 +377,7 @@ Nitrate, & Phosphate", "Glucose, Nitrate,
 delta_cells
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
 #Load more packages.
@@ -391,7 +391,7 @@ library(patchwork)
 delta_cells + mew + doubling + plot_annotation(tag_levels = "a") +plot_layout(ncol =1)
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 ``` r
 #Save data.
@@ -424,7 +424,7 @@ toc %>%
   custom_fill
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ## Calculate DOC, ∆DOC, Bioavailable DOC Fraction, and Bacterial Growth Efficiency (BGE)
 
@@ -468,7 +468,7 @@ Nitrate, & Phosphate", "Glucose, Nitrate,
 bioav
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 ``` r
 #Plot BV derived bioavailable DOC fraction.
@@ -491,7 +491,7 @@ Nitrate, & Phosphate", "Glucose, Nitrate,
 bioav_bv
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 ``` r
 #Plot ∆DOC.
@@ -514,7 +514,7 @@ Nitrate, & Phosphate", "Glucose, Nitrate,
 deldoc
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 ``` r
 #Plot BV derived ∆DOC.
@@ -537,7 +537,7 @@ Nitrate, & Phosphate", "Glucose, Nitrate,
 deldoc_bv
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ``` r
 #Plot BGE.
@@ -560,7 +560,7 @@ Nitrate, & Phosphate", "Glucose, Nitrate,
 bge
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 ``` r
 #Plot BV derived BGE.
@@ -583,7 +583,7 @@ Nitrate, & Phosphate", "Glucose, Nitrate,
 bge_bv
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ``` r
 #Combine bar plots into one image.
@@ -591,4 +591,4 @@ bge_bv
 deldoc / deldoc_bv / bioav / bioav_bv / bge / bge_bv + plot_annotation(tag_levels = "a") + plot_layout(ncol = 2)
 ```
 
-![](DAPI_TOC_custom_plots_files/figure-gfm/fig-1.png)<!-- -->
+![](DAPI_TOC_files/figure-gfm/fig-1.png)<!-- -->
