@@ -29,13 +29,9 @@ excel_sheets("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_202
 
 metadata <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx", sheet = "Metadata")
 
-glimpse(metadata)
-
 dapi_data <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx", sheet = "DAPI_Data")
-glimpse(dapi_data)
 
 toc_data <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx", sheet = "TOC_Data")
-glimpse(toc_data)
 
 dapi_metadata <- metadata %>%
   select(-Bottle) %>%

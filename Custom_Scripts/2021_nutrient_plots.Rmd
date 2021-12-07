@@ -5,13 +5,11 @@ date: "11/18/2021"
 output: "github_document"
 ---
 
-```{r setup, include=FALSE}
-
-knitr::opts_chunk$set(echo = TRUE)
-
-```
+##### This document contains nutrient plots for the DOC remineralization experiment.
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
+
+#Load packages.
 
 library(tidyverse)
 library(readxl)
@@ -22,14 +20,27 @@ library(RColorBrewer)
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
 
+#Import data, set levels, and customize colors.
+
 nutrients <- read.csv("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week8/2021_nutrient_condensed.csv")
 
 trial <- c("A", "B", "C", "D", "E", "F", "G", "H")
+
 treatment <- c("Control", "Kelp Exudate", "Kelp Exudate_Nitrate_Phosphate", "Glucose_Nitrate_Phosphate")
 
-myColors <- brewer.pal(4, "Set1")
+myColors <- brewer.pal(4, "Set2")
+
 names(myColors) <- levels(levels)
+
 custom_colors <- scale_color_manual(name = "", values = myColors)
+
+custom_legend <- scale_color_manual(name = "", values = myColors, labels = c("Control", "Kelp Exudate", "Kelp Exudate, Nitrate, & Phosphate", "Glucose, Nitrate, & Phosphate"))
+
+```
+
+```{r}
+
+#Plot phosphate data.
 
 nutrients %>%
   ggplot(aes(x = Time, y = Phosphate_uM, group = Sample, color = Treatment)) +
@@ -39,11 +50,14 @@ nutrients %>%
   ggtitle(expression(paste("Change in Phosphate Concentration by Treatment Group"))) +
   xlab("Timepoint")+
   ylab(expression(paste("Phosphate (", mu, "M)"))) +
-  custom_colors
+  custom_colors +
+  custom_legend
 
 ```
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
+
+#Plot nitrate data.
 
 nutrients %>%
   ggplot(aes(x = Time, y = Nitrite_Nitrate_uM, group = Sample, color = Treatment)) +
@@ -53,11 +67,14 @@ nutrients %>%
   ggtitle(expression(paste("Change in Nitrite/Nitrate Concentration by Treatment Group"))) +
   xlab("Timepoint")+
   ylab(expression(paste("Nitrite/Nitrate (", mu, "M)"))) +
-  custom_colors
+  custom_colors +
+  custom_legend
 
 ```
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
+
+#Plot ammonia data.
 
 nutrients %>%
   ggplot(aes(x = Time, y = Ammonia_uM, group = Sample, color = Treatment)) +
@@ -67,6 +84,7 @@ nutrients %>%
   ggtitle(expression(paste("Change in Ammonia Concentration by Treatment Group"))) +
   xlab("Timepoint")+
   ylab(expression(paste("Ammonia (", mu, "M)"))) +
-  custom_colors
+  custom_colors +
+  custom_legend
 
 ```
