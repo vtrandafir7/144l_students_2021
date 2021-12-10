@@ -21,55 +21,10 @@ excel_sheets("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_202
 ``` r
 metadata <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx", sheet = "Metadata")
 
-glimpse(metadata)
-```
-
-    ## Rows: 80
-    ## Columns: 16
-    ## $ Experiment           <chr> "144L_2021", "144L_2021", "144L_2021", "144L_2021…
-    ## $ Location             <chr> "Goleta Pier", "Goleta Pier", "Goleta Pier", "Gol…
-    ## $ Temperature          <dbl> 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 1…
-    ## $ Depth                <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
-    ## $ Bottle               <chr> "A", "A", "A", "A", "A", "A", "A", "A", "A", "A",…
-    ## $ Timepoint            <dbl> 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6…
-    ## $ Treatment            <chr> "Control", "Control", "Control", "Control", "Cont…
-    ## $ Target_DOC_Amendment <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
-    ## $ Inoculum_L           <dbl> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
-    ## $ Media_L              <dbl> 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5…
-    ## $ Datetime             <chr> "2021-10-04T16:00", "2021-10-05T08:00", "2021-10-…
-    ## $ TOC_Sample           <lgl> TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FA…
-    ## $ Cell_Sample          <lgl> TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, T…
-    ## $ DAPI_Sample          <lgl> TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FA…
-    ## $ DNA_Sample           <lgl> TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FA…
-    ## $ Nutrient_Sample      <lgl> TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, F…
-
-``` r
 dapi_data <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx", sheet = "DAPI_Data")
-glimpse(dapi_data)
-```
 
-    ## Rows: 12
-    ## Columns: 6
-    ## $ Treatment                <chr> "Control", "Control", "Control", "Kelp Exudat…
-    ## $ Timepoint                <dbl> 0, 4, 8, 0, 4, 8, 0, 4, 8, 0, 4, 8
-    ## $ Cells_mL                 <dbl> 660667.0, 919405.6, 1133869.7, 663088.1, 1043…
-    ## $ Cells_mL_Stdev           <dbl> 73217.76, 363326.27, 99930.05, 113546.27, 181…
-    ## $ Mean_Biovolume_um3_cell  <dbl> 0.04556209, 0.05080353, 0.04093212, 0.0387149…
-    ## $ Biovolume_Stdev_um3_cell <dbl> 0.006054805, 0.011000369, 0.004684495, 0.0054…
-
-``` r
 toc_data <- read_excel("~/Documents/College/Fourth Year/EEMB 144L/Github/144l_students_2021/Input_Data/week2/144L_2021_BactAbund.xlsx", sheet = "TOC_Data")
-glimpse(toc_data)
-```
 
-    ## Rows: 16
-    ## Columns: 4
-    ## $ Treatment <chr> "Control", "Control", "Control", "Control", "Kelp Exudate", …
-    ## $ Timepoint <dbl> 0, 4, 8, 9, 0, 4, 8, 9, 0, 4, 8, 9, 0, 4, 8, 9
-    ## $ Mean_uMC  <dbl> 91.70646, 89.13506, 87.79890, 84.82951, 94.82839, 89.17062, …
-    ## $ Stdev_uMC <dbl> 0.28298816, 0.19207804, 0.29282962, 0.04865985, 0.30888466, …
-
-``` r
 dapi_metadata <- metadata %>%
   select(-Bottle) %>%
   unique()
@@ -130,7 +85,8 @@ custom_fill <- scale_fill_manual(name = "", values = myColors, labels = c("Contr
 #Plot cell abundance.
 
 cells %>%
-  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA),
+         Treatment = factor(Treatment, levels = treatment)) %>%
   ggplot(aes(x = days, y = Cells_L, color = Treatment)) +
   geom_errorbar(aes(ymin = Cells_L - Cells_L_Stdev, ymax = Cells_L + Cells_L_Stdev), width = 0.1) +
   geom_line(size = 1) +
@@ -151,7 +107,8 @@ cells %>%
 #Plot changes in cell biovolume.
 
 cells %>%
-  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA),
+         Treatment = factor(Treatment, levels = treatment)) %>%
   ggplot(aes(x=days, y=Mean_Biovolume_um3_cell, color = Treatment, group = Treatment)) +
   geom_errorbar(aes(ymin = Mean_Biovolume_um3_cell - Biovolume_Stdev_um3_cell, ymax = Mean_Biovolume_um3_cell + Biovolume_Stdev_um3_cell, width = 0.1)) +
   geom_line(size = 1) +
@@ -174,7 +131,8 @@ cells %>%
 ln_cells <- cells %>%
   group_by(Treatment) %>%
   mutate(ln_cells = log(Cells_L),
-         diff_ln_cells = ln_cells - lag(ln_cells, default = first(ln_cells))) %>%
+         diff_ln_cells = ln_cells - lag(ln_cells, default = first(ln_cells)),
+         Treatment = factor(Treatment, levels = treatment)) %>%
   ungroup()
 ```
 
@@ -200,7 +158,8 @@ ln_cells %>%
 ``` r
 growth <- ln_cells %>% 
   mutate(exp_start = 0,
-         exp_end = 4) %>% 
+         exp_end = 4,
+         Treatment = factor(Treatment, levels = treatment)) %>% 
   group_by(Treatment) %>% 
   mutate(ln_cells_exp_start = ifelse(Timepoint == exp_start, ln_cells, NA), 
          ln_cells_exp_end = ifelse(Timepoint == exp_end, ln_cells, NA), 
@@ -245,7 +204,8 @@ bactcarbon <- growth %>%
         biovol_CCF = 91.7*(Mean_Biovolume_um3_cell)^0.686 * 2.72, 
         biovol_bc = Cells_L * biovol_CCF * (1/12 * 10^-9), 
         biovol_bc_exp_end = ifelse(Timepoint == exp_end, biovol_bc, NA), 
-        delta_biovol_bc = delta_cells * CCF * (1/12 * 10^-9)) %>% 
+        delta_biovol_bc = delta_cells * CCF * (1/12 * 10^-9),
+        Treatment = factor(Treatment, levels = treatment)) %>% 
   group_by(Treatment) %>%
   mutate(delta_biovol_bc = biovol_bc_exp_end - first(biovol_bc)) %>%
   fill(biovol_bc_exp_end:delta_biovol_bc, .direction = "updown") %>%
@@ -433,7 +393,8 @@ toc %>%
 
 doc <- toc %>% 
   mutate(doc = Mean_uMC - bc, 
-         doc_bv = Mean_uMC - biovol_bc) %>% 
+         doc_bv = Mean_uMC - biovol_bc,
+         Treatment = factor(Treatment, levels = treatment)) %>% 
   group_by(Treatment) %>%
   mutate(doc_exp_end = ifelse(Timepoint == exp_end, doc, NA),
          bioav_doc = (first(doc) - doc_exp_end) / first(doc),

@@ -98,7 +98,8 @@ custom_fill <- scale_fill_manual(name = "", values = myColors, labels = c("Contr
 #Plot cell abundance.
 
 cells %>%
-  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA),
+         Treatment = factor(Treatment, levels = treatment)) %>%
   ggplot(aes(x = days, y = Cells_L, color = Treatment)) +
   geom_errorbar(aes(ymin = Cells_L - Cells_L_Stdev, ymax = Cells_L + Cells_L_Stdev), width = 0.1) +
   geom_line(size = 1) +
@@ -119,7 +120,8 @@ cells %>%
 #Plot changes in cell biovolume.
 
 cells %>%
-  mutate(dna = ifelse(DNA_Sample == T, "*", NA)) %>%
+  mutate(dna = ifelse(DNA_Sample == T, "*", NA),
+         Treatment = factor(Treatment, levels = treatment)) %>%
   ggplot(aes(x=days, y=Mean_Biovolume_um3_cell, color = Treatment, group = Treatment)) +
   geom_errorbar(aes(ymin = Mean_Biovolume_um3_cell - Biovolume_Stdev_um3_cell, ymax = Mean_Biovolume_um3_cell + Biovolume_Stdev_um3_cell, width = 0.1)) +
   geom_line(size = 1) +
@@ -142,7 +144,8 @@ cells %>%
 ln_cells <- cells %>%
   group_by(Treatment) %>%
   mutate(ln_cells = log(Cells_L),
-         diff_ln_cells = ln_cells - lag(ln_cells, default = first(ln_cells))) %>%
+         diff_ln_cells = ln_cells - lag(ln_cells, default = first(ln_cells)),
+         Treatment = factor(Treatment, levels = treatment)) %>%
   ungroup()
 
 ```
@@ -170,7 +173,8 @@ ln_cells %>%
 
 growth <- ln_cells %>% 
   mutate(exp_start = 0,
-         exp_end = 4) %>% 
+         exp_end = 4,
+         Treatment = factor(Treatment, levels = treatment)) %>% 
   group_by(Treatment) %>% 
   mutate(ln_cells_exp_start = ifelse(Timepoint == exp_start, ln_cells, NA), 
          ln_cells_exp_end = ifelse(Timepoint == exp_end, ln_cells, NA), 
@@ -209,7 +213,8 @@ bactcarbon <- growth %>%
         biovol_CCF = 91.7*(Mean_Biovolume_um3_cell)^0.686 * 2.72, 
         biovol_bc = Cells_L * biovol_CCF * (1/12 * 10^-9), 
         biovol_bc_exp_end = ifelse(Timepoint == exp_end, biovol_bc, NA), 
-        delta_biovol_bc = delta_cells * CCF * (1/12 * 10^-9)) %>% 
+        delta_biovol_bc = delta_cells * CCF * (1/12 * 10^-9),
+        Treatment = factor(Treatment, levels = treatment)) %>% 
   group_by(Treatment) %>%
   mutate(delta_biovol_bc = biovol_bc_exp_end - first(biovol_bc)) %>%
   fill(biovol_bc_exp_end:delta_biovol_bc, .direction = "updown") %>%
@@ -396,7 +401,8 @@ toc %>%
 
 doc <- toc %>% 
   mutate(doc = Mean_uMC - bc, 
-         doc_bv = Mean_uMC - biovol_bc) %>% 
+         doc_bv = Mean_uMC - biovol_bc,
+         Treatment = factor(Treatment, levels = treatment)) %>% 
   group_by(Treatment) %>%
   mutate(doc_exp_end = ifelse(Timepoint == exp_end, doc, NA),
          bioav_doc = (first(doc) - doc_exp_end) / first(doc),
